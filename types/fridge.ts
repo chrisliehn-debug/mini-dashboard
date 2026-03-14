@@ -4,7 +4,7 @@ export interface FridgeItem {
   category: string;
   quantity: number;
   unit: string;
-  expires_at: string; // ISO date string (YYYY-MM-DD)
+  expires_date: string; // ISO date string (YYYY-MM-DD)
   created_at: string; // ISO timestamp string
 }
 

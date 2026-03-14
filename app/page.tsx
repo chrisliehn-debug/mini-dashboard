@@ -8,7 +8,7 @@ async function getFridgeItems(): Promise<FridgeItem[]> {
   const { data, error } = await supabase
     .from("fridge_items")
     .select("*")
-    .order("expires_at", { ascending: true });
+    .order("expires_date", { ascending: true });
 
   if (error) {
     console.error("Supabase error:", error.message);
@@ -99,10 +99,10 @@ export default function DashboardPage() {
 
   const totalItems = items.length;
   const expiringSoon = items.filter(
-    (item) => getItemStatus(item.expires_at) === "expiring_soon"
+    (item) => getItemStatus(item.expires_date) === "expiring_soon"
   ).length;
   const expired = items.filter(
-    (item) => getItemStatus(item.expires_at) === "expired"
+    (item) => getItemStatus(item.expires_date) === "expired"
   ).length;
 
   if (loading) {
@@ -152,7 +152,7 @@ export default function DashboardPage() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {items.map((item) => {
-                  const status = getItemStatus(item.expires_at);
+                  const status = getItemStatus(item.expires_date);
                   return (
                     <tr
                       key={item.id}
@@ -168,10 +168,10 @@ export default function DashboardPage() {
                         {item.quantity} {item.unit}
                       </td>
                       <td className="px-4 py-3 text-gray-600">
-                        {formatDate(item.expires_at)}
+                        {formatDate(item.expires_date)}
                       </td>
                       <td className="px-4 py-3">
-                        <StatusBadge expiresAt={item.expires_at} />
+                        <StatusBadge expiresAt={item.expires_date} />
                       </td>
                     </tr>
                   );
