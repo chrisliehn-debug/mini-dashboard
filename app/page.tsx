@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { FridgeItem, getItemStatus } from "@/types/fridge";
 
@@ -83,8 +86,16 @@ function KpiCard({ title, value, color }: KpiCardProps) {
   );
 }
 
-export default async function DashboardPage() {
-  const items = await getFridgeItems();
+export default function DashboardPage() {
+  const [items, setItems] = useState<FridgeItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getFridgeItems().then((data) => {
+      setItems(data);
+      setLoading(false);
+    });
+  }, []);
 
   const totalItems = items.length;
   const expiringSoon = items.filter(
@@ -93,6 +104,14 @@ export default async function DashboardPage() {
   const expired = items.filter(
     (item) => getItemStatus(item.expires_at) === "expired"
   ).length;
+
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto flex items-center justify-center py-32">
+        <p className="text-gray-400 text-lg">Daten werden geladen…</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto space-y-8">
